@@ -19,6 +19,13 @@ public class ImageViewer
         super("Image Manipulator Program Thing");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        xCoordField = new JTextArea();
+        yCoordField = new JTextArea();
+        rValueField = new JTextArea();
+        gValueField = new JTextArea();
+        bValueField = new JTextArea();
+        aValueField = new JTextArea();
+
         // Instantiate our image panel class and add this panel to the
         // content pane of the JFrame
         imagePanel = new ImagePanel();
@@ -115,7 +122,6 @@ public class ImageViewer
         JLabel xCoord = new JLabel("X");
         xCoord.setBounds(20,75,100, 100);
         this.add(xCoord);
-        xCoordField = new JTextArea();
         this.add(xCoordField);
         xCoordField.setBounds(35, 115, 60,20);
 
@@ -123,7 +129,6 @@ public class ImageViewer
         JLabel yCoord = new JLabel("Y");
         yCoord.setBounds(102, 75, 100, 100);
         this.add(yCoord);
-        yCoordField = new JTextArea();
         this.add(yCoordField);
         yCoordField.setBounds(115,115, 60, 20);
 
@@ -132,7 +137,6 @@ public class ImageViewer
         JLabel rValue = new JLabel ("R");
         rValue.setBounds(184, 75, 100, 100);
         this.add(rValue);
-        rValueField = new JTextArea();
         this.add(rValueField);
         rValueField.setBounds(195, 115, 60, 20);
 
@@ -140,7 +144,6 @@ public class ImageViewer
         JLabel gValue = new JLabel ("G");
         gValue.setBounds(266, 75, 100, 100);
         this.add(gValue);
-        gValueField = new JTextArea();
         this.add(gValueField);
         gValueField.setBounds(277, 115, 60, 20);
 
@@ -148,7 +151,6 @@ public class ImageViewer
         JLabel bValue = new JLabel ("B");
         bValue.setBounds(348, 75, 100, 100);
         this.add(bValue);
-        bValueField = new JTextArea();
         this.add(bValueField);
         bValueField.setBounds(359, 115, 60, 20);
 
@@ -157,7 +159,6 @@ public class ImageViewer
         JLabel aValue = new JLabel ("A");
         aValue.setBounds(430, 75, 100, 100);
         this.add(aValue);
-        aValueField = new JTextArea();
         this.add(aValueField);
         aValueField.setBounds(441, 115, 60, 20);
 
