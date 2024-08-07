@@ -25,11 +25,13 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
     private AffineTransform allTransforms = new AffineTransform();
     private int imageX = 0;
     private int imageY = 0;
-    private boolean overImage = false;
+    int imageWidth = 0;
+    int imageHeight = 0;
 
     private JTextField xField, yField, aField, rField, gField, bField;
     public ImagePanel() {
 
+        this.setBackground(Color.BLACK);
         this.setPreferredSize(new Dimension(200, 200));
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
@@ -40,12 +42,18 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
     public void getImage(File file) {
         try {
             image = ImageIO.read(file);
+            imageWidth = image.getWidth();
+            imageHeight = image.getHeight();
             this.repaint();
-            this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
-            this.revalidate();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void updateImageCoordinates() {
+        imageX = (getWidth() - imageWidth) / 2;
+        imageY = (getHeight() - imageHeight) / 2;
+        this.repaint();
     }
 
     // This gets called by the JVM whenever it needs to do so. For
@@ -192,7 +200,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
         //Color color = new;
         //}
         //});
-        System.out.println("I have entered the image");
+        //System.out.println("I have entered the image");
         }
     }
     @Override
@@ -200,7 +208,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
         if (image == null) {
 
         } else {
-            System.out.println("I have left the image");
+            //System.out.println("I have left the image");
         }
     }
 
@@ -216,9 +224,19 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
             if(overImage(currentPixel)) {
                 int tempX = currentPixel.x - imageX;
                 int tempY = currentPixel.y - imageY;
-                int rgb = image.getRGB(tempX,tempY);
-                Color color = new Color(rgb, true);
-                System.out.println("I am moving across the image");
+
+                int argb = image.getRGB(tempX,tempY);
+                int a = (argb >> 24) & 0xff;
+                int r = (argb >> 16) & 0xff;
+                int g = (argb >> 8) & 0xff;
+                int b = (argb >> 0) & 0xff;
+
+                //System.out.println("A: " + a);
+                //System.out.println("R: " + r);
+                //System.out.println("G: " + g);
+                //System.out.println("B: " + b);
+                //System.out.println("X: " + tempX);
+                //System.out.println("Y: " + tempY);
 
             }
         } else {
@@ -227,6 +245,6 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
     }
 
     public boolean overImage(Point currentPixel) {
-        return currentPixel.x >= imageX && currentPixel.x < imageX + image.getWidth() && currentPixel.y >= imageY && currentPixel.y < imageY + image.getHeight();
+        return currentPixel.x >= imageX && currentPixel.x < imageX + imageWidth && currentPixel.y >= imageY && currentPixel.y < imageY + imageHeight;
     }
 }
