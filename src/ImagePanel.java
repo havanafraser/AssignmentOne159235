@@ -85,8 +85,8 @@ public class ImagePanel extends JPanel implements MouseMotionListener, MouseList
         if (image == null) {
             nullImage();
         } else {
-            transformed = AffineTransform.getScaleInstance(1, -1);
-            transformed.translate(0, -image.getHeight(null));
+            transformed = AffineTransform.getScaleInstance(-1, 1);
+            transformed.translate(-image.getWidth(null),0);
             allTransforms.concatenate(transformed);
             AffineTransformOp op = new AffineTransformOp(transformed, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
             image = op.filter(image, null);
@@ -99,8 +99,9 @@ public class ImagePanel extends JPanel implements MouseMotionListener, MouseList
         if (image == null) {
             nullImage();
         } else {
-            transformed = AffineTransform.getScaleInstance(-1, 1);
-            transformed.translate(-image.getWidth(null), 0);
+            // transformed = scales x by -1 to flip the image horizontally
+            transformed = AffineTransform.getScaleInstance(1, -1);
+            transformed.translate(0,-image.getHeight(null));
             allTransforms.concatenate(transformed);
             AffineTransformOp op = new AffineTransformOp(transformed, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
             image = op.filter(image, null);
@@ -110,18 +111,26 @@ public class ImagePanel extends JPanel implements MouseMotionListener, MouseList
 
     //flips image by X & Y axis and repaints
     public void flipXY() {
+        // Checks there is an image loaded
         if (image == null) {
             nullImage();
         } else {
+            // transformed = scales by -1 x and y to flip the image vertically and horizontally
             transformed = AffineTransform.getScaleInstance(-1, -1);
+            // transformed = move image back to original position
             transformed.translate(-image.getWidth(null), -image.getHeight(null));
+            // Add this to allTransforms to keep track of changes made to the original image
             allTransforms.concatenate(transformed);
+            // Apply transformed to the image
             AffineTransformOp op = new AffineTransformOp(transformed, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
             image = op.filter(image, null);
+            // Repaint
             this.repaint();
         }
     }
 
+    // Method to check if there is an image loaded
+    // or not when the negate button is clicked
     public void negateImage() {
         if (image == null) {
             nullImage();
@@ -132,79 +141,87 @@ public class ImagePanel extends JPanel implements MouseMotionListener, MouseList
 
     //For both negating the image and then returning it to colour, pixel by pixel
     public void argbPixelChanger() {
+
         for (int y = 0; y < image.getHeight(); y++) {
+
             for (int x = 0; x < image.getWidth(); x++) {
 
-                // current pixel and it's argb values using bitwise and operation with 0xff
+                // current pixel and it's argb values using bit shifting
+                // and 0xff mask
                 int argb = image.getRGB(x, y);
                 int a = (argb >> 24) & 0xff;
                 int r = (argb >> 16) & 0xff;
                 int g = (argb >> 8) & 0xff;
                 int b = (argb >> 0) & 0xff;
 
-                r = 255 - r; // new (negative) r value
-                g = 255 - g; // new (negative) g value
-                b = 255 - b; // new (negative) b value
+                r = 255 - r; // new r value
+                g = 255 - g; // new g value
+                b = 255 - b; // new b value
 
-                //new pixel values
+                //new pixel value
                 argb = (a << 24) | (r << 16) | (g << 8) | b;
-                //setting images new pixel value
+
+                //setting image's new pixel value
                 image.setRGB(x, y, argb);
             }
         }
-        //repainting image to display new argb values (negative or coloured depending on boolean)
+
+        //repainting image with new argb values
         this.repaint();
     }
 
+    // Prints a string to the console if there is no image loaded
     public void nullImage() {
         System.out.println("There is no image loaded! Please load in an image via File >> Open :)");
     }
 
-    @Override
-    public void mouseDragged(MouseEvent e) {
-
-    }
-
+    // Mouse moved event action handler
     @Override
     public void mouseMoved(MouseEvent e) {
         if (image != null) {
             int mouseX = e.getX();
             int mouseY = e.getY();
 
+            // checks if the mouse is within the bounds of the image
             if (mouseX >= 0 && mouseX < image.getWidth() && mouseY >= 0 && mouseY < image.getHeight()) {
+
+                // Get current pixels argb values
                 int argb = image.getRGB(mouseX,mouseY);
+
+                // Get individual argb values using relevant bit shifting
+                // and 0xff mask
                 int a = (argb >> 24) & 0xff;
                 int r = (argb >> 16) & 0xff;
                 int g = (argb >> 8) & 0xff;
                 int b = (argb >> 0) & 0xff;
+
+                // Send the argb values and current mouse x/y coords
+                // to the text fields
                 imageViewer.updateTextFields(mouseX,mouseY, r, g, b, a);
+
             } else {
+                // If the mouse has left the bounds of the image, clear the text fields
                 imageViewer.clearTextFields();
             }
         }
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-
-    }
+    // If the mouse leaves the image panel
+    // clear the text fields too
     @Override
     public void mouseExited(MouseEvent e) {
         imageViewer.clearTextFields();
     }
 
+    // --- Unused methods --- //
     @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
+    public void mouseDragged(MouseEvent e) {}
     @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
+    public void mouseClicked(MouseEvent e) {}
     @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
+    public void mousePressed(MouseEvent e) {}
+    @Override
+    public void mouseReleased(MouseEvent e) {}
+    @Override
+    public void mouseEntered(MouseEvent e) {}
 }
