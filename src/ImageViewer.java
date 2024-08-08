@@ -13,17 +13,18 @@ public class ImageViewer
 
     // Image viewer constructor
     public ImageViewer() {
+
+        // --- Image Viewer ---
+        // title of program
         super("Image Manipulator Program Thing");
+        // close frame
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // Sets the size of the window
+        this.setSize(800, 800);
+        // No layout manager
+        this.setLayout(null);
 
-        // Textfields for x y coordinates and argb values
-        xCoordField = new JTextArea();
-        yCoordField = new JTextArea();
-        rValueField = new JTextArea();
-        gValueField = new JTextArea();
-        bValueField = new JTextArea();
-        aValueField = new JTextArea();
-
+        // --- Image panel ---
         // Instantiate our image panel class and add this panel to the
         // content pane of the JFrame
         imagePanel = new ImagePanel(this);
@@ -32,11 +33,7 @@ public class ImageViewer
         // Sets where I want the image to be displayed on the JPanel
         imagePanel.setBounds(20, 200, 400, 400);
 
-        // Sets the size of the window
-        this.setSize(800, 800);
-        // No layout manager
-        this.setLayout(null);
-
+        //  --- Menu bar ---
         // Creates JMenuBar menuBar
         JMenuBar menuBar = new JMenuBar();
         // Add menuBar to JFrame
@@ -56,10 +53,11 @@ public class ImageViewer
         quitItem.addActionListener(this);
         fileMenu.add(quitItem);
 
-
+        // --- Buttons ---
         // Original orienation button
         JButton originalOrientation = new JButton("O");
         originalOrientation.setBounds(50, 5, 80, 40);
+        this.add(originalOrientation);
         //Add action listener to button
         originalOrientation.addActionListener(new ActionListener() {
             @Override
@@ -71,6 +69,7 @@ public class ImageViewer
         // FlipX Button
         JButton flipX = new JButton("flipX");
         flipX.setBounds(155, 5, 80, 40);
+        this.add(flipX);
         //Add action listener to button
         flipX.addActionListener(new ActionListener() {
             @Override
@@ -82,6 +81,7 @@ public class ImageViewer
         // FlipY Button
         JButton flipY = new JButton("flipY");
         flipY.setBounds(255, 5, 80, 40);
+        this.add(flipY);
         //Add action listener to button
         flipY.addActionListener(new ActionListener() {
             @Override
@@ -93,6 +93,7 @@ public class ImageViewer
         // FlipXY Button
         JButton flipXY = new JButton("flipXY");
         flipXY.setBounds(355, 5, 80, 40);
+        this.add(flipXY);
         //Add action listener to button
         flipXY.addActionListener(new ActionListener() {
             @Override
@@ -104,6 +105,7 @@ public class ImageViewer
         // Negate button
         JButton negate = new JButton("negate");
         negate.setBounds(455, 5, 80, 40);
+        this.add(negate);
         negate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -111,18 +113,12 @@ public class ImageViewer
             }
         });
 
-        // Adding of buttons to JPanel
-        this.add(originalOrientation);
-        this.add(flipX);
-        this.add(flipY);
-        this.add(flipXY);
-        this.add(negate);
-
-
+        // --- Labels and text fields for coordinates & argb values ---
         // X Coordinate label & text area
         JLabel xCoord = new JLabel("X");
         xCoord.setBounds(20, 75, 100, 100);
         this.add(xCoord);
+        xCoordField = new JTextArea();
         this.add(xCoordField);
         xCoordField.setBounds(35, 115, 60, 20);
 
@@ -130,6 +126,7 @@ public class ImageViewer
         JLabel yCoord = new JLabel("Y");
         yCoord.setBounds(102, 75, 100, 100);
         this.add(yCoord);
+        yCoordField = new JTextArea();
         this.add(yCoordField);
         yCoordField.setBounds(115, 115, 60, 20);
 
@@ -138,6 +135,7 @@ public class ImageViewer
         JLabel rValue = new JLabel("R");
         rValue.setBounds(181, 75, 100, 100);
         this.add(rValue);
+        rValueField = new JTextArea();
         this.add(rValueField);
         rValueField.setBounds(195, 115, 60, 20);
 
@@ -145,6 +143,7 @@ public class ImageViewer
         JLabel gValue = new JLabel("G");
         gValue.setBounds(263, 75, 100, 100);
         this.add(gValue);
+        gValueField = new JTextArea();
         this.add(gValueField);
         gValueField.setBounds(277, 115, 60, 20);
 
@@ -152,6 +151,7 @@ public class ImageViewer
         JLabel bValue = new JLabel("B");
         bValue.setBounds(345, 75, 100, 100);
         this.add(bValue);
+        bValueField = new JTextArea();
         this.add(bValueField);
         bValueField.setBounds(359, 115, 60, 20);
 
@@ -160,12 +160,15 @@ public class ImageViewer
         JLabel aValue = new JLabel("A");
         aValue.setBounds(427, 75, 100, 100);
         this.add(aValue);
+        aValueField = new JTextArea();
         this.add(aValueField);
         aValueField.setBounds(441, 115, 60, 20);
 
+        // make frame visible
         this.setVisible(true);
     }
 
+    // updates text fields, called in image panel
     public void updateTextFields(int x, int y, int r, int g, int b, int a) {
         xCoordField.setText(String.valueOf(x));
         yCoordField.setText(String.valueOf(y));
@@ -175,6 +178,7 @@ public class ImageViewer
         aValueField.setText(String.valueOf(a));
     }
 
+    // clears the text fields, called in image panel
     public void clearTextFields() {
         xCoordField.setText("");
         yCoordField.setText("");
@@ -183,8 +187,9 @@ public class ImageViewer
         bValueField.setText("");
         aValueField.setText("");
     }
-// File chooser listener for File >> Open event
-// Sends chosen file to imagePanel.getImage();
+
+// Action handler for menu bar, creates file chooser if
+// open is selected, closes system if quit is selected
 public void actionPerformed(ActionEvent event) {
         JComponent source = (JComponent) event.getSource();
         if (source == openItem) {

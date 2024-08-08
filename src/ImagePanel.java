@@ -24,7 +24,6 @@ public class ImagePanel extends JPanel implements MouseMotionListener, MouseList
     private BufferedImage image;
     private AffineTransform transformed;
     private AffineTransform allTransforms = new AffineTransform();
-    private Boolean insideImage = false;
 
     public ImagePanel(ImageViewer imageViewer) {
 
@@ -62,18 +61,19 @@ public class ImagePanel extends JPanel implements MouseMotionListener, MouseList
 
     // Image is returned to original orientation
     public void originalOrientation() {
+        // check if there is an image loaded
         if (image == null) {
             nullImage();
         }
         try {
             //inverses all transforms
             AffineTransform inverseTransform = allTransforms.createInverse();
+            //apply inverse to image
             AffineTransformOp transformed = new AffineTransformOp(inverseTransform, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
             image = transformed.filter((BufferedImage) image, null);
             //reset alltransforms to record the next set of transformations on the image
             allTransforms = new AffineTransform();
-
-            //repaint the image w/ the original orientaation info
+            //repaint
             this.repaint();
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,11 +85,16 @@ public class ImagePanel extends JPanel implements MouseMotionListener, MouseList
         if (image == null) {
             nullImage();
         } else {
+            // transformed = scales x by -1 to flip the image horizontally
             transformed = AffineTransform.getScaleInstance(-1, 1);
+            //transformed = move image back to original position
             transformed.translate(-image.getWidth(null),0);
+            // keep track of all transformations
             allTransforms.concatenate(transformed);
+            // apply transformed to the image
             AffineTransformOp op = new AffineTransformOp(transformed, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
             image = op.filter(image, null);
+            // repaint
             this.repaint();
         }
     }
@@ -99,12 +104,16 @@ public class ImagePanel extends JPanel implements MouseMotionListener, MouseList
         if (image == null) {
             nullImage();
         } else {
-            // transformed = scales x by -1 to flip the image horizontally
+            // transformed = scales y by -1 to flip the image vertically
             transformed = AffineTransform.getScaleInstance(1, -1);
+            //transformed = move image back to original position
             transformed.translate(0,-image.getHeight(null));
+            // keep track of all transformations
             allTransforms.concatenate(transformed);
+            // apply transformed to the image
             AffineTransformOp op = new AffineTransformOp(transformed, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
             image = op.filter(image, null);
+            //repaint
             this.repaint();
         }
     }
@@ -119,7 +128,7 @@ public class ImagePanel extends JPanel implements MouseMotionListener, MouseList
             transformed = AffineTransform.getScaleInstance(-1, -1);
             // transformed = move image back to original position
             transformed.translate(-image.getWidth(null), -image.getHeight(null));
-            // Add this to allTransforms to keep track of changes made to the original image
+            // keep track of all transformations
             allTransforms.concatenate(transformed);
             // Apply transformed to the image
             AffineTransformOp op = new AffineTransformOp(transformed, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
