@@ -1,24 +1,22 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.color.ColorSpace;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ColorConvertOp;
 import java.io.File;
-import java.nio.Buffer;
 
-// Recommended to make your program class a JFrame
 public class ImageViewer
         extends JFrame
         implements ActionListener {
+
     private JMenuItem openItem, quitItem;
     private ImagePanel imagePanel;
     private JTextArea xCoordField, yCoordField, rValueField, gValueField, bValueField, aValueField;
+
+    // Image viewer constructor
     public ImageViewer() {
         super("Image Manipulator Program Thing");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        // Textfields for x y coordinates and argb values
         xCoordField = new JTextArea();
         yCoordField = new JTextArea();
         rValueField = new JTextArea();
@@ -28,10 +26,10 @@ public class ImageViewer
 
         // Instantiate our image panel class and add this panel to the
         // content pane of the JFrame
-        imagePanel = new ImagePanel();
+        imagePanel = new ImagePanel(this);
         Container content = this.getContentPane();
         content.add(imagePanel);
-        // Sets where I want the image to be displayed
+        // Sets where I want the image to be displayed on the JPanel
         imagePanel.setBounds(20, 200, 400, 400);
 
         // Sets the size of the window
@@ -39,18 +37,21 @@ public class ImageViewer
         // No layout manager
         this.setLayout(null);
 
-        // Creates JMenuBar and adds this to the JFrame
+        // Creates JMenuBar menuBar
         JMenuBar menuBar = new JMenuBar();
+        // Add menuBar to JFrame
         this.setJMenuBar(menuBar);
+        //Create JMenu fileMenu
         JMenu fileMenu = new JMenu("File");
+        //Add fileMenu to menuBar
         menuBar.add(fileMenu);
 
-        //"Open" Menu item and action listener
+        //Create open menu item, add action listener and add to fileMenu
         openItem = new JMenuItem("Open");
         openItem.addActionListener(this);
         fileMenu.add(openItem);
 
-        //"Quit" Menu item and action listener
+        //Create quit menu item, add action listener and add to fileMenu
         quitItem = new JMenuItem("Quit");
         quitItem.addActionListener(this);
         fileMenu.add(quitItem);
@@ -106,7 +107,7 @@ public class ImageViewer
         negate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                    imagePanel.negateImage();
+                imagePanel.negateImage();
             }
         });
 
@@ -120,44 +121,44 @@ public class ImageViewer
 
         // X Coordinate label & text area
         JLabel xCoord = new JLabel("X");
-        xCoord.setBounds(20,75,100, 100);
+        xCoord.setBounds(20, 75, 100, 100);
         this.add(xCoord);
         this.add(xCoordField);
-        xCoordField.setBounds(35, 115, 60,20);
+        xCoordField.setBounds(35, 115, 60, 20);
 
         // Y Coordinate label & text area
         JLabel yCoord = new JLabel("Y");
         yCoord.setBounds(102, 75, 100, 100);
         this.add(yCoord);
         this.add(yCoordField);
-        yCoordField.setBounds(115,115, 60, 20);
+        yCoordField.setBounds(115, 115, 60, 20);
 
 
         // R Value label & text area
-        JLabel rValue = new JLabel ("R");
-        rValue.setBounds(184, 75, 100, 100);
+        JLabel rValue = new JLabel("R");
+        rValue.setBounds(181, 75, 100, 100);
         this.add(rValue);
         this.add(rValueField);
         rValueField.setBounds(195, 115, 60, 20);
 
         // G Value label & text area
-        JLabel gValue = new JLabel ("G");
-        gValue.setBounds(266, 75, 100, 100);
+        JLabel gValue = new JLabel("G");
+        gValue.setBounds(263, 75, 100, 100);
         this.add(gValue);
         this.add(gValueField);
         gValueField.setBounds(277, 115, 60, 20);
 
         // B Value label & text area
-        JLabel bValue = new JLabel ("B");
-        bValue.setBounds(348, 75, 100, 100);
+        JLabel bValue = new JLabel("B");
+        bValue.setBounds(345, 75, 100, 100);
         this.add(bValue);
         this.add(bValueField);
         bValueField.setBounds(359, 115, 60, 20);
 
 
         // A Value label & text area
-        JLabel aValue = new JLabel ("A");
-        aValue.setBounds(430, 75, 100, 100);
+        JLabel aValue = new JLabel("A");
+        aValue.setBounds(427, 75, 100, 100);
         this.add(aValue);
         this.add(aValueField);
         aValueField.setBounds(441, 115, 60, 20);
@@ -165,6 +166,23 @@ public class ImageViewer
         this.setVisible(true);
     }
 
+    public void updateTextFields(int x, int y, int r, int g, int b, int a) {
+        xCoordField.setText(String.valueOf(x));
+        yCoordField.setText(String.valueOf(y));
+        rValueField.setText(String.valueOf(r));
+        gValueField.setText(String.valueOf(g));
+        bValueField.setText(String.valueOf(b));
+        aValueField.setText(String.valueOf(a));
+    }
+
+    public void clearTextFields() {
+        xCoordField.setText("");
+        yCoordField.setText("");
+        rValueField.setText("");
+        gValueField.setText("");
+        bValueField.setText("");
+        aValueField.setText("");
+    }
 // File chooser listener for File >> Open event
 // Sends chosen file to imagePanel.getImage();
 public void actionPerformed(ActionEvent event) {

@@ -6,6 +6,7 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -17,17 +18,21 @@ import java.awt.Graphics;
 
 // Class to read and display an image. Images are displayed in a
 // JPanel, so we make our class extend one.
-public class ImagePanel extends JPanel implements MouseMotionListener {
+public class ImagePanel extends JPanel implements MouseMotionListener, MouseListener {
 
+    private ImageViewer imageViewer;
     private BufferedImage image;
     private AffineTransform transformed;
     private AffineTransform allTransforms = new AffineTransform();
+    private Boolean insideImage = false;
 
-    public ImagePanel() {
+    public ImagePanel(ImageViewer imageViewer) {
 
-        this.setBackground(Color.BLACK);
+        this.imageViewer = imageViewer;
+        // For debugging - this.setBackground(Color.BLACK);
         this.setPreferredSize(new Dimension(800, 600));
         this.addMouseMotionListener(this);
+        this.addMouseListener(this);
     }
 
     // A method to read an image from a file handle object. Note here
@@ -172,17 +177,34 @@ public class ImagePanel extends JPanel implements MouseMotionListener {
                 int r = (argb >> 16) & 0xff;
                 int g = (argb >> 8) & 0xff;
                 int b = (argb >> 0) & 0xff;
-
-                // To replace this with output to my JTextAreas
-                System.out.println("A: " + a);
-                System.out.println("R: " + r);
-                System.out.println("G: " + g);
-                System.out.println("B: " + b);
-                System.out.println("X: " + mouseX);
-                System.out.println("Y: " + mouseY);
+                imageViewer.updateTextFields(mouseX,mouseY, r, g, b, a);
+            } else {
+                imageViewer.clearTextFields();
             }
-        } else {
-
         }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+    @Override
+    public void mouseExited(MouseEvent e) {
+        imageViewer.clearTextFields();
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
     }
 }
